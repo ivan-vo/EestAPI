@@ -27,13 +27,13 @@ namespace ToDoWebAPI.Controllers
             return Ok(toDoItemService.GetAllTaskByIdList(listId));
         }
 
-        // [HttpGet("/lists")]
-        // public ActionResult<ToDoItem>  GetToDoItemById()
-        // {
-        //     // TODO: Your code here
-        //     int listId = Int32.Parse(this.Request.Query["listId"]);
-        //     int id = Int32.Parse(this.Request.Query["id"]);
-        //     return toDoItemService.GetById(listId, id);
-        // }
+        [HttpGet("/itembyid")]
+        public ActionResult<List<Item>> GetToDoItemById()
+        {
+            // TODO: Your code here
+            int listId = Int32.Parse(this.Request.Query["listId"]);
+            int id = Int32.Parse(this.Request.Query["id"]);
+            return toDoItemService.GetById(listId, id);
+        }
     }
 }

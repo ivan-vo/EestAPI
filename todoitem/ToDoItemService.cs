@@ -5,60 +5,78 @@ namespace ToDoWebAPI
 {
     public class ToDoItemService
     {
-        public List<List<ToDoItem>> tasksList = new List<List<ToDoItem>>
+        private ToDoItemContext _context;
+        public ToDoItemService(ToDoItemContext context)
         {
-            new List<ToDoItem>
-            {
-                new ToDoItem(){title = "Abra"}
-            }
-        };
-        private int lastId = 1;
-        public List<ToDoItem> GetAllTaskByIdList(int id)
-        {
-            return tasksList[id];
+            this._context = context;
         }
-        public ToDoItem CreateToDoItemInList(int id, ToDoItem item)
+        public List<Item> GetAllTaskByIdList(int idList)
         {
-            item.id = lastId++;
-            if (tasksList[id] == null)
+            using (_context)
             {
-                tasksList.Add(new List<ToDoItem>());
+                return _context.list_items.Where(items => items.taskListId == idList).ToList();
             }
-            tasksList[id].Add(item);
-            return item;
         }
-        public ToDoItem GetById(int idList, int id)
+        public Item CreateToDoItemInList(int idList, Item item)
         {
-            return tasksList[idList][id];
+            using (_context)
+            {
+                item.taskListId = idList;
+                _context.Add(item);
+                _context.SaveChanges();
+                return item;
+            }
         }
-        public ToDoItem PutItem(int listId, int id, ToDoItem toDoItem)
+        public void CreateToDoItemList(int idList)
         {
-            tasksList[listId].Insert(id, toDoItem);
-            tasksList[listId][id].id = tasksList[listId][id + 1].id;
-            tasksList[listId].RemoveAt(id + 1);
-            return tasksList[listId][id];
+            using (_context)
+            {
+                _context.task_lists.Add(new TaskList(){taskListId = idList});
+                _context.SaveChanges();
+            }
         }
-        public ToDoItem PatchItem(int listId,int id, ToDoItem toDoItem)
+        public List<Item> GetById(int idList, int id)
         {
-            if(toDoItem.doDate != null)
+            using (_context)
             {
-                tasksList[listId][id].doDate = toDoItem.doDate;
+                var items =  GetAllTaskByIdList(idList);
+                var item = items.Where(item => item.itemId == id).ToList();
+                return item;
             }
-            else if(toDoItem.id != 0)
-            {
-                tasksList[listId][id].id = toDoItem.id;
-            }
-            else if(toDoItem.title != null)
-            {
-                tasksList[listId][id].title = toDoItem.title;
-            }
-            tasksList[listId][id].done = toDoItem.done;
-            return tasksList[listId][id];
         }
+        // public ToDoItem PutItem(int listId, int id, ToDoItem toDoItem)
+        // {
+        //     tasksList[listId].Insert(id, toDoItem);
+        //     tasksList[listId][id].id = tasksList[listId][id + 1].id;
+        //     tasksList[listId].RemoveAt(id + 1);
+        //     return tasksList[listId][id];
+        // }
+        // public ToDoItem PatchItem(int listId,int id, ToDoItem toDoItem)
+        // {
+        //     if(toDoItem.doDate != null)
+        //     {
+        //         tasksList[listId][id].doDate = toDoItem.doDate;
+        //     }
+        //     else if(toDoItem.id != 0)
+        //     {
+        //         tasksList[listId][id].id = toDoItem.id;
+        //     }
+        //     else if(toDoItem.title != null)
+        //     {
+        //         tasksList[listId][id].title = toDoItem.title;
+        //     }
+        //     tasksList[listId][id].done = toDoItem.done;
+        //     return tasksList[listId][id];
+        // }
 
-        public void DeleteItem(int listId, int id)
+        public void DeleteItem(int idList, int id)
         {
-            tasksList[listId].RemoveAt(id);
+            using (_context)
+            {
+                Item item = new Item(){itemId = id, taskListId = idList};
+                _context.list_items.Remove(item);
+                _context.SaveChanges();
+            }
         }
     }
 }
