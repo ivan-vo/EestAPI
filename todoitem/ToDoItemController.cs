@@ -26,6 +26,17 @@ namespace ToDoWebAPI.Controllers
         {
             return toDoItemService.GetAllTaskByIdList(listId);
         }
+        [HttpGet("/tasks")]
+        public ActionResult<IEnumerable<Item>> GetAllToDoItems()
+        {
+            return toDoItemService.GetAllTasks();
+        }
+
+        // [HttpGet("/dashboard")]
+        // public void GetInfo()
+        // {
+        //     toDoItemService.GetDashboard();
+        // }
 
         [HttpGet("/lists/{listId}/tasks/{id}")]
         public ActionResult<List<Item>>  GetToDoItemById(int listId, int id)
@@ -40,24 +51,24 @@ namespace ToDoWebAPI.Controllers
             Item createdItem = toDoItemService.CreateToDoItemInList(listId ,item);
             return Created($"api/ToDoItem/{createdItem.itemId}", createdItem);
         }
-        [HttpGet("/createlist/{listId}")]
-        public void  CreateToDoItemList(int listId)
+        [HttpPost("/createlist")]
+        public void  CreateToDoItemList(TaskList taskList)
         {
             // TODO: Your code here
-            toDoItemService.CreateToDoItemList(listId);
+            toDoItemService.CreateToDoItemList(taskList);
         }
 
-        // [HttpPut("/lists/{listId}/tasks/{id}")]
-        // public ActionResult<ToDoItem> PutToDoItem(int listId,int id, ToDoItem item)
-        // {
-        //     return toDoItemService.PutItem(listId, id, item);
-        // }
+        [HttpPatch("/lists/{listId}/tasks/{id}")]
+        public ActionResult<Item> PatchToDoItem(int listId,int id, Item item)
+        {
+            return toDoItemService.PatchItem(listId, id, item);
+        }
 
-        // [HttpPatch("/lists/{listId}/tasks/{id}")]
-        // public ActionResult<ToDoItem> PatchToDoItem(int listId,int id, ToDoItem item)
-        // {
-        //     return toDoItemService.PutItem(listId, id, item);
-        // }
+        [HttpPut("/lists/{listId}/tasks/{id}")]
+        public ActionResult<Item> PutToDoItem(int listId,int id, Item item)
+        {
+            return toDoItemService.PutItem(listId, id, item);
+        }
 
 
         [HttpDelete("/lists/{listId}/tasks/{id}")]
@@ -66,6 +77,14 @@ namespace ToDoWebAPI.Controllers
             // TODO: Your code here
             // await Task.Yield();
             toDoItemService.DeleteItem(listId, id);
+        }
+
+        [HttpDelete("/{listId}")]
+        public void DeleteTaskList(int listId)
+        {
+            // TODO: Your code here
+            // await Task.Yield();
+            toDoItemService.DeleteTaskList(listId);
         }
     }
 }

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ToDoWebAPI
 {
@@ -17,6 +19,24 @@ namespace ToDoWebAPI
                 return _context.list_items.Where(items => items.taskListId == idList).ToList();
             }
         }
+        public List<Item> GetAllTasks()
+        {
+            // using (_context)
+            // {
+                return _context.list_items.ToList();
+            // }
+        }
+        // public void GetDashboard()
+        // {
+        //     int numTaskToday;
+        //     using (_context)
+        //     {
+        //         numTaskToday = _context.list_items.Where(i => i.dueDate.Date == DateTime.Now.Date).Count();
+        //         var allNotDoneTask = _context.list_items
+        //             .Where(item => item.done == false)
+        //             .GroupBy(item => item.taskListId);
+        //     }
+        // }
         public Item CreateToDoItemInList(int idList, Item item)
         {
             using (_context)
@@ -27,11 +47,12 @@ namespace ToDoWebAPI
                 return item;
             }
         }
-        public void CreateToDoItemList(int idList)
+
+        public void CreateToDoItemList(TaskList taskList)
         {
             using (_context)
             {
-                _context.task_lists.Add(new TaskList(){taskListId = idList});
+                _context.task_lists.Add(taskList);
                 _context.SaveChanges();
             }
         }
@@ -44,30 +65,25 @@ namespace ToDoWebAPI
                 return item;
             }
         }
-        // public ToDoItem PutItem(int listId, int id, ToDoItem toDoItem)
-        // {
-        //     tasksList[listId].Insert(id, toDoItem);
-        //     tasksList[listId][id].id = tasksList[listId][id + 1].id;
-        //     tasksList[listId].RemoveAt(id + 1);
-        //     return tasksList[listId][id];
-        // }
-        // public ToDoItem PatchItem(int listId,int id, ToDoItem toDoItem)
-        // {
-        //     if(toDoItem.doDate != null)
-        //     {
-        //         tasksList[listId][id].doDate = toDoItem.doDate;
-        //     }
-        //     else if(toDoItem.id != 0)
-        //     {
-        //         tasksList[listId][id].id = toDoItem.id;
-        //     }
-        //     else if(toDoItem.title != null)
-        //     {
-        //         tasksList[listId][id].title = toDoItem.title;
-        //     }
-        //     tasksList[listId][id].done = toDoItem.done;
-        //     return tasksList[listId][id];
-        // }
+        public Item PutItem(int idList, int id, Item item)
+        {
+            item.taskListId = idList;
+            item.itemId = id;
+            _context.list_items.Update(item);
+            _context.SaveChanges();
+            return item;
+        }
+        public Item PatchItem(int idList,int id, Item item)
+        {
+            using (_context)
+            {
+            item.taskListId = idList;
+            item.itemId = id;
+            _context.list_items.Update(item);
+            _context.SaveChanges();
+            return item;
+            }
+        }
 
         public void DeleteItem(int idList, int id)
         {
@@ -75,6 +91,16 @@ namespace ToDoWebAPI
             {
                 Item item = new Item(){itemId = id, taskListId = idList};
                 _context.list_items.Remove(item);
+                _context.SaveChanges();
+            }
+        }
+
+        public void DeleteTaskList(int idList)
+        {
+            using (_context)
+            {
+                TaskList taskList = new TaskList(){ taskListId = idList};
+                _context.task_lists.Remove(taskList);
                 _context.SaveChanges();
             }
         }

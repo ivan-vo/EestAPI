@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ToDoWebAPI.Migrations
@@ -28,6 +29,7 @@ namespace ToDoWebAPI.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     title = table.Column<string>(type: "text", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true),
+                    due_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     task_list_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>

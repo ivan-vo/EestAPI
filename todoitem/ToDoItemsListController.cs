@@ -21,7 +21,7 @@ namespace ToDoWebAPI.Controllers
             this.toDoItemService = service;
         }
         [HttpGet("/lists")]
-        public ActionResult<IEnumerable<ToDoItem>> GetToDoItems()
+        public ActionResult<IEnumerable<Item>> GetToDoItems()
         {
             int listId = Int32.Parse(this.Request.Query["listId"]);
             return Ok(toDoItemService.GetAllTaskByIdList(listId));
