@@ -21,22 +21,36 @@ namespace ToDoWebAPI.Controllers
 
         }
 
+        // [HttpGet("/lists/{listId}/tasks")]
+        // public ActionResult<IEnumerable<Item>> GetToDoItems(int listId)
+        // {
+        //     return toDoItemService.GetAllTaskByIdList(listId);
+        // }
+
         [HttpGet("/lists/{listId}/tasks")]
-        public ActionResult<IEnumerable<Item>> GetToDoItems(int listId)
+        public ActionResult<IEnumerable<Item>> GetToDoItemsAllOrNotDone(int listId)
         {
-            return toDoItemService.GetAllTaskByIdList(listId);
+            bool all = bool.Parse(this.Request.Query["all"]);
+            return toDoItemService.GetAllTaskByIdListWithAll(listId, all);
         }
+
         [HttpGet("/tasks")]
         public ActionResult<IEnumerable<Item>> GetAllToDoItems()
         {
             return toDoItemService.GetAllTasks();
         }
 
-        // [HttpGet("/dashboard")]
-        // public void GetInfo()
-        // {
-        //     toDoItemService.GetDashboard();
-        // }
+        [HttpGet("/collection/today")]
+        public ActionResult<object> GetTodayTask()
+        {
+            return Ok(toDoItemService.GetTodayTask());
+        }
+
+        [HttpGet("/dashboard")]
+        public ActionResult<DashBoard> GetInfo()
+        {
+            return toDoItemService.GetDashboard();
+        }
 
         [HttpGet("/lists/{listId}/tasks/{id}")]
         public ActionResult<List<Item>>  GetToDoItemById(int listId, int id)
