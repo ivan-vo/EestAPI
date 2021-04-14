@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-//using ToDoWebAPI.Models;
 
 namespace ToDoWebAPI.Controllers
 {
@@ -13,25 +12,10 @@ namespace ToDoWebAPI.Controllers
     {
         private ToDoItemService toDoItemService;
 
-        // private ToDoItemService toDoItemService;
-
         public ToDoItemController(ToDoItemService service)
         {
             this.toDoItemService = service;
 
-        }
-
-        // [HttpGet("/lists/{listId}/tasks")]
-        // public ActionResult<IEnumerable<Item>> GetToDoItems(int listId)
-        // {
-        //     return toDoItemService.GetAllTaskByIdList(listId);
-        // }
-
-        [HttpGet("/lists/{listId}/tasks")]
-        public ActionResult<IEnumerable<Item>> GetToDoItemsAllOrNotDone(int listId)
-        {
-            bool all = bool.Parse(this.Request.Query["all"]);
-            return toDoItemService.GetAllTaskByIdListWithAll(listId, all);
         }
 
         [HttpGet("/tasks")]
@@ -49,7 +33,8 @@ namespace ToDoWebAPI.Controllers
         [HttpGet("/dashboard")]
         public ActionResult<DashBoard> GetInfo()
         {
-            return toDoItemService.GetDashboard();
+            toDoItemService.GetDashboard();
+            return null;
         }
 
         [HttpGet("/lists/{listId}/tasks/{id}")]
@@ -61,14 +46,13 @@ namespace ToDoWebAPI.Controllers
         [HttpPost("/lists/{listId}/tasks")]
         public ActionResult<IEnumerable<Item>>  CreateToDoItem(int listId,Item item)
         {
-            // TODO: Your code here
             Item createdItem = toDoItemService.CreateToDoItemInList(listId ,item);
             return Created($"api/ToDoItem/{createdItem.itemId}", createdItem);
         }
+
         [HttpPost("/createlist")]
         public void  CreateToDoItemList(TaskList taskList)
         {
-            // TODO: Your code here
             toDoItemService.CreateToDoItemList(taskList);
         }
 
@@ -88,16 +72,12 @@ namespace ToDoWebAPI.Controllers
         [HttpDelete("/lists/{listId}/tasks/{id}")]
         public void DeleteToDoItemById(int listId, int id)
         {
-            // TODO: Your code here
-            // await Task.Yield();
             toDoItemService.DeleteItem(listId, id);
         }
 
         [HttpDelete("/{listId}")]
         public void DeleteTaskList(int listId)
         {
-            // TODO: Your code here
-            // await Task.Yield();
             toDoItemService.DeleteTaskList(listId);
         }
     }

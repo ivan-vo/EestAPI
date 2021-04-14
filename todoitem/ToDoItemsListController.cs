@@ -35,5 +35,11 @@ namespace ToDoWebAPI.Controllers
             int id = Int32.Parse(this.Request.Query["id"]);
             return toDoItemService.GetById(listId, id);
         }
+        [HttpGet("/lists/{listId}/tasks")]
+        public ActionResult<IEnumerable<Item>> GetToDoItemsAllOrNotDone(int listId)
+        {
+            bool all = bool.Parse(this.Request.Query["all"]);
+            return toDoItemService.GetAllTaskByIdListWithAll(listId, all);
+        }
     }
 }

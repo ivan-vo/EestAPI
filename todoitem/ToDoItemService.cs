@@ -70,9 +70,10 @@ namespace ToDoWebAPI
                     {
                         notDoneTask[item.taskListId] = 1;
                     }
-                }
+                }  
                 return new DashBoard(){notDoneTasks = notDoneTask, numTaskToday = numTaskToday};
             }
+            
         }
 
         public object GetTodayTask()
