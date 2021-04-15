@@ -25,16 +25,15 @@ namespace ToDoWebAPI.Controllers
         }
 
         [HttpGet("/collection/today")]
-        public ActionResult<object> GetTodayTask()
+        public ActionResult<List<Item>> GetTodayTask()
         {
-            return Ok(toDoItemService.GetTodayTask());
+            return toDoItemService.GetTodayTask();
         }
 
         [HttpGet("/dashboard")]
         public ActionResult<DashBoard> GetInfo()
         {
-            toDoItemService.GetDashboard();
-            return null;
+            return toDoItemService.GetDashboard();;
         }
 
         [HttpGet("/lists/{listId}/tasks/{id}")]
