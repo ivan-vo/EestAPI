@@ -49,21 +49,16 @@ namespace ToDoWebAPI.Controllers
         }
 
         [HttpPost("/lists")]
-        public void  CreateToDoItemList(TaskList taskList)
+        public ActionResult<IEnumerable<TaskList>>  CreateToDoItemList(TaskList taskList)
         {
-            toDoItemService.CreateToDoItemList(taskList);
-        }
-
-        [HttpPatch("/lists/{listId}/tasks/{id}")]
-        public ActionResult<Item> PatchToDoItem(int listId,int id, Item item)
-        {
-            return toDoItemService.PatchItem(listId, id, item);
+            TaskList createdList = toDoItemService.CreateToDoItemList(taskList);
+            return Created($"/lists/{createdList.taskListId}/tasks",createdList);
         }
 
         [HttpPut("/lists/{listId}/tasks/{id}")]
         public ActionResult<Item> PutToDoItem(int listId,int id, Item item)
         {
-            return toDoItemService.PutItem(listId, id, item);
+            return Ok(toDoItemService.PutItem(listId, id, item));
         }
 
 

@@ -74,10 +74,11 @@ namespace ToDoWebAPI
             return item;
         }
 
-        public void CreateToDoItemList(TaskList taskList)
+        public TaskList CreateToDoItemList(TaskList taskList)
         {
             _context.task_lists.Add(taskList);
             _context.SaveChanges();
+            return taskList;
         }
         public List<Item> GetById(int idList, int id)
         {
@@ -93,15 +94,6 @@ namespace ToDoWebAPI
             _context.SaveChanges();
             return item;
         }
-        public Item PatchItem(int idList, int id, Item item)
-        {
-            item.taskListId = idList;
-            item.itemId = id;
-            _context.list_items.Update(item);
-            _context.SaveChanges();
-            return item;
-        }
-
         public void DeleteItem(int idList, int id)
         {
             Item item = new Item() { itemId = id, taskListId = idList };
