@@ -15,41 +15,40 @@ namespace ToDoWebAPI.Controllers
         public ToDoItemController(ToDoItemService service)
         {
             this.toDoItemService = service;
-
         }
 
         [HttpGet("/tasks")]
         public ActionResult<IEnumerable<Item>> GetAllToDoItems()
         {
-            return toDoItemService.GetAllTasks();
+            return Ok(toDoItemService.GetAllTasks());
         }
 
         [HttpGet("/collection/today")]
         public ActionResult<List<Item>> GetTodayTask()
         {
-            return toDoItemService.GetTodayTask();
+            return Ok(toDoItemService.GetTodayTask());
         }
 
         [HttpGet("/dashboard")]
-        public ActionResult<DashBoard> GetInfo()
+        public ActionResult<DashBoardDTO> GetInfo()
         {
-            return toDoItemService.GetDashboard();;
+            return Ok(toDoItemService.GetDashboard());
         }
 
         [HttpGet("/lists/{listId}/tasks/{id}")]
         public ActionResult<List<Item>>  GetToDoItemById(int listId, int id)
         {
-            return toDoItemService.GetById(listId, id);
+            return Ok(toDoItemService.GetById(listId, id));
         }
 
         [HttpPost("/lists/{listId}/tasks")]
         public ActionResult<IEnumerable<Item>>  CreateToDoItem(int listId,Item item)
         {
             Item createdItem = toDoItemService.CreateToDoItemInList(listId ,item);
-            return Created($"api/ToDoItem/{createdItem.itemId}", createdItem);
+            return Created($"/lists/{listId}/tasks/{createdItem.itemId}", createdItem);
         }
 
-        [HttpPost("/createlist")]
+        [HttpPost("/lists")]
         public void  CreateToDoItemList(TaskList taskList)
         {
             toDoItemService.CreateToDoItemList(taskList);

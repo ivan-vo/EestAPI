@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace ToDoWebAPI
 {
-    public class DashBoard
+    public class DashBoardDTO
     {
         public int numTaskToday { get; set; }
         public List<ItemDTO> notDoneTasks { get; set; }
@@ -45,16 +45,17 @@ namespace ToDoWebAPI
         {
             return _context.list_items.ToList();
         }
-        public DashBoard GetDashboard()
+        public DashBoardDTO GetDashboard()
         {
             int numTaskToday;
             numTaskToday = _context.list_items.Where(i => i.dueDate.Date == DateTime.Now.Date).Count();
-            var countNotDoneTaskByName = (from item in _context.Set<Item>().Where(i => i.done == false)
-                                          join list in _context.Set<TaskList>()
-                                              on item.taskListId equals list.taskListId
-                                          group item by new { list.name, list.taskListId } into g
-                                          select new ItemDTO { Count = g.Count(), nameList = g.Key.name, idList = g.Key.taskListId }).ToList();
-            return new DashBoard() { notDoneTasks = countNotDoneTaskByName, numTaskToday = numTaskToday };
+            var countNotDoneTaskByName = 
+                (from item in _context.Set<Item>().Where(i => i.done == false)
+                    join list in _context.Set<TaskList>()
+                        on item.taskListId equals list.taskListId
+                    group item by new { list.name, list.taskListId } into g
+                    select new ItemDTO { Count = g.Count(), nameList = g.Key.name, idList = g.Key.taskListId }).ToList();
+            return new DashBoardDTO() { notDoneTasks = countNotDoneTaskByName, numTaskToday = numTaskToday };
         }
 
         public List<Item> GetTodayTask()
