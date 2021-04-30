@@ -22,6 +22,11 @@ namespace ToDoWebAPI.Controllers
         {
             return Ok(toDoItemService.GetAllTasks());
         }
+        [HttpGet("/tasklists")]
+        public ActionResult<IEnumerable<TaskList>> GetAllLists()
+        {
+            return Ok(toDoItemService.GetAllLists());
+        }
         [HttpGet("/tasks/notdone")]
         public ActionResult<IEnumerable<Item>> GetNotDoneTask()
         {

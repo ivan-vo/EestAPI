@@ -49,6 +49,10 @@ namespace ToDoWebAPI
         {
             return _context.list_items.ToList();
         }
+        public List<TaskList> GetAllLists()
+        {
+            return _context.task_lists.ToList();
+        }
         public DashBoardDTO GetDashboard()
         {
             int numTaskToday;

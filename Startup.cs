@@ -38,8 +38,10 @@ namespace ToDoWebAPI
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://127.0.0.1:5500", "http://127.0.0.1:5501");
+                    builder.WithOrigins("http://127.0.0.1:5500", "http://127.0.0.1:5501","http://localhost:3000","http://localhost:3001");
                     builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyMethod();
                     builder.AllowAnyMethod();
                 });
             });
