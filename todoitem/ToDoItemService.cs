@@ -14,7 +14,7 @@ namespace ToDoWebAPI
     }
     public class ItemDTO
     {
-        public int Count { get; set; }
+        public int countNotDoneTask { get; set; }
         public string nameList { get; set; }
         public int idList { get; set; }
     }
@@ -41,6 +41,10 @@ namespace ToDoWebAPI
             }
 
         }
+        public List<Item> GetAllNotDoneTask()
+        {
+            return _context.list_items.Where(items => items.done == false).ToList();
+        }
         public List<Item> GetAllTasks()
         {
             return _context.list_items.ToList();
@@ -48,20 +52,20 @@ namespace ToDoWebAPI
         public DashBoardDTO GetDashboard()
         {
             int numTaskToday;
-            numTaskToday = _context.list_items.Where(i => i.dueDate.Date == DateTime.Now.Date).Count();
-            var countNotDoneTaskByName = 
+            numTaskToday = _context.list_items.Where(i => i.dueDate.Value.Date == DateTime.Now.Date).Count();
+            var countNotDoneTaskByName =
                 (from item in _context.Set<Item>().Where(i => i.done == false)
-                    join list in _context.Set<TaskList>()
-                        on item.taskListId equals list.taskListId
-                    group item by new { list.name, list.taskListId } into g
-                    select new ItemDTO { Count = g.Count(), nameList = g.Key.name, idList = g.Key.taskListId }).ToList();
+                 join list in _context.Set<TaskList>()
+                     on item.taskListId equals list.taskListId
+                 group item by new { list.name, list.taskListId } into g
+                 select new ItemDTO { countNotDoneTask = g.Count(), nameList = g.Key.name, idList = g.Key.taskListId }).ToList();
             return new DashBoardDTO() { notDoneTasks = countNotDoneTaskByName, numTaskToday = numTaskToday };
         }
 
         public List<Item> GetTodayTask()
         {
             return _context.list_items
-                .Where(i => i.dueDate.Date == DateTime.Now.Date)
+                .Where(i => i.dueDate.Value.Date == DateTime.Now.Date)
                 .Include(i => i.TaskList)
                 .ToList();
         }
@@ -86,6 +90,12 @@ namespace ToDoWebAPI
             var item = items.Where(item => item.itemId == id).ToList();
             return item;
         }
+        public List<Item> GetItemWithoutListId(int id)
+        {
+            var items = GetAllTasks();
+            var item = items.Where(item => item.itemId == id).ToList();
+            return item;
+        }
         public Item PutItem(int idList, int id, Item item)
         {
             item.taskListId = idList;
@@ -94,9 +104,23 @@ namespace ToDoWebAPI
             _context.SaveChanges();
             return item;
         }
+
+        public Item PatchItemWithoutId(Item item)
+        {
+            _context.list_items.Update(item);
+            _context.SaveChanges();
+            return item;
+        }
+
         public void DeleteItem(int idList, int id)
         {
             Item item = new Item() { itemId = id, taskListId = idList };
+            _context.list_items.Remove(item);
+            _context.SaveChanges();
+        }
+        public void DeleteItemWithoutListID(int id)
+        {
+            Item item = new Item() { itemId = id };
             _context.list_items.Remove(item);
             _context.SaveChanges();
         }

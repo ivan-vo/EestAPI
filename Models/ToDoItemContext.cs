@@ -23,7 +23,7 @@ public class Item
     public string title { get; set; }
     public bool done { get; set; }
     public string description { get; set; }
-    public DateTime dueDate { get; set; }
+    public DateTime? dueDate { get; set; }
 
     public int taskListId { get; set; }
     public TaskList TaskList { get; set; }

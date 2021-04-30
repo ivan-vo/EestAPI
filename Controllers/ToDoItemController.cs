@@ -22,6 +22,11 @@ namespace ToDoWebAPI.Controllers
         {
             return Ok(toDoItemService.GetAllTasks());
         }
+        [HttpGet("/tasks/notdone")]
+        public ActionResult<IEnumerable<Item>> GetNotDoneTask()
+        {
+            return Ok(toDoItemService.GetAllNotDoneTask());
+        }
 
         [HttpGet("/collection/today")]
         public ActionResult<List<Item>> GetTodayTask()
@@ -36,29 +41,41 @@ namespace ToDoWebAPI.Controllers
         }
 
         [HttpGet("/lists/{listId}/tasks/{id}")]
-        public ActionResult<List<Item>>  GetToDoItemById(int listId, int id)
+        public ActionResult<List<Item>> GetToDoItemById(int listId, int id)
         {
             return Ok(toDoItemService.GetById(listId, id));
         }
 
-        [HttpPost("/lists/{listId}/tasks")]
-        public ActionResult<IEnumerable<Item>>  CreateToDoItem(int listId,Item item)
+        [HttpGet("/tasks/{id}")]
+        public ActionResult<List<Item>> GetToDoItemWithoutIdList(int id)
         {
-            Item createdItem = toDoItemService.CreateToDoItemInList(listId ,item);
+            return Ok(toDoItemService.GetItemWithoutListId(id));
+        }
+
+        [HttpPost("/lists/{listId}/tasks")]
+        public ActionResult<IEnumerable<Item>> CreateToDoItem(int listId, Item item)
+        {
+            Item createdItem = toDoItemService.CreateToDoItemInList(listId, item);
             return Created($"/lists/{listId}/tasks/{createdItem.itemId}", createdItem);
         }
 
         [HttpPost("/lists")]
-        public ActionResult<IEnumerable<TaskList>>  CreateToDoItemList(TaskList taskList)
+        public ActionResult<IEnumerable<TaskList>> CreateToDoItemList(TaskList taskList)
         {
             TaskList createdList = toDoItemService.CreateToDoItemList(taskList);
-            return Created($"/lists/{createdList.taskListId}/tasks",createdList);
+            return Created($"/lists/{createdList.taskListId}/tasks", createdList);
         }
 
         [HttpPut("/lists/{listId}/tasks/{id}")]
-        public ActionResult<Item> PutToDoItem(int listId,int id, Item item)
+        public ActionResult<Item> PutToDoItem(int listId, int id, Item item)
         {
             return Ok(toDoItemService.PutItem(listId, id, item));
+        }
+
+        [HttpPatch("/lists/tasks/{id}")]
+        public ActionResult<Item> PatchToDoItemWithoutId(Item item)
+        {
+            return Ok(toDoItemService.PatchItemWithoutId(item));
         }
 
 
@@ -66,6 +83,11 @@ namespace ToDoWebAPI.Controllers
         public void DeleteToDoItemById(int listId, int id)
         {
             toDoItemService.DeleteItem(listId, id);
+        }
+        [HttpDelete("/lists/tasks/{id}")]
+        public void DeleteToDoItemWithoutListID(int id)
+        {
+            toDoItemService.DeleteItemWithoutListID(id);
         }
 
         [HttpDelete("/{listId}")]
