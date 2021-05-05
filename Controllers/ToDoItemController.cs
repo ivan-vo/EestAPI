@@ -50,6 +50,11 @@ namespace ToDoWebAPI.Controllers
         {
             return Ok(toDoItemService.GetById(listId, id));
         }
+        [HttpGet("/lists/{listId}/tasks")]
+        public ActionResult<List<Item>> GetTodoItemsByListId(int listId)
+        {
+            return Ok(toDoItemService.GetItemsByListId(listId));
+        }
 
         [HttpGet("/tasks/{id}")]
         public ActionResult<List<Item>> GetToDoItemWithoutIdList(int id)

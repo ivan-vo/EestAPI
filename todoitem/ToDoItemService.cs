@@ -45,6 +45,10 @@ namespace ToDoWebAPI
         {
             return _context.list_items.Where(items => items.done == false).ToList();
         }
+        public List<Item> GetItemsByListId(int listId)
+        {
+            return _context.list_items.Where(items => items.taskListId == listId).ToList();
+        }
         public List<Item> GetAllTasks()
         {
             return _context.list_items.ToList();
