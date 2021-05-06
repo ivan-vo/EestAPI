@@ -73,7 +73,8 @@ namespace ToDoWebAPI
         public List<Item> GetTodayTask()
         {
             return _context.list_items
-                .Where(i => i.dueDate.Value.Date == DateTime.Now.Date)
+                .Where(i => i.dueDate.Value.Date <= DateTime.Now.Date)
+                .Where(i => i.done == false)
                 .Include(i => i.TaskList)
                 .ToList();
         }
