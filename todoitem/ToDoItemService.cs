@@ -10,14 +10,20 @@ namespace ToDoWebAPI
     public class DashBoardDTO
     {
         public int numTaskToday { get; set; }
-        public List<ItemDTO> notDoneTasks { get; set; }
+        public List<NotDoneItemDTO> notDoneTasks { get; set; }
+        public List<ItemLists> lists { get; set; }
     }
-    public class ItemDTO
+    public class NotDoneItemDTO
     {
         public int countNotDoneTask { get; set; }
-        public string nameList { get; set; }
         public int idList { get; set; }
     }
+    public class ItemLists
+    {
+        public string name { get; set; }
+        public int id { get; set; }
+    }
+
     public class ToDoItemService
     {
         private ToDoItemContext _context;
@@ -66,8 +72,10 @@ namespace ToDoWebAPI
                  join list in _context.Set<TaskList>()
                      on item.taskListId equals list.taskListId
                  group item by new { list.name, list.taskListId } into g
-                 select new ItemDTO { countNotDoneTask = g.Count(), nameList = g.Key.name, idList = g.Key.taskListId }).ToList();
-            return new DashBoardDTO() { notDoneTasks = countNotDoneTaskByName, numTaskToday = numTaskToday };
+                 select new NotDoneItemDTO { countNotDoneTask = g.Count(), idList = g.Key.taskListId }).ToList();
+            var lists = (from taskLists in _context.Set<TaskList>()
+                    select new ItemLists { name = taskLists.name, id = taskLists.taskListId }).ToList();
+            return new DashBoardDTO() { notDoneTasks = countNotDoneTaskByName, numTaskToday = numTaskToday,lists = lists };
         }
 
         public List<Item> GetTodayTask()
